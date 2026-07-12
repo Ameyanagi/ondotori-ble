@@ -1,0 +1,33 @@
+min_version: 1.10.0
+
+pre-commit:
+  parallel: true
+  jobs:
+    - name: ruff lint
+      glob: "*.py"
+      run: uv run ruff check {staged_files}
+
+    - name: ruff format
+      glob: "*.py"
+      run: uv run ruff format --check {staged_files}
+
+    - name: ty
+      glob:
+        - "*.py"
+        - "*.toml"
+      run: uv run ty check
+
+pre-push:
+  parallel: true
+  jobs:
+    - name: lock
+      run: uv lock --check
+
+    - name: tests
+      run: uv run pytest
+
+    - name: docs
+      run: uv run --group docs mkdocs build --strict
+
+    - name: package
+      run: uv build --no-sources

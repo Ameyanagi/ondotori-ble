@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_LOCKED: "1"
+
+jobs:
+  quality:
+    name: Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+          python-version: "3.14"
+          version: "0.11.28"
+      - run: uv sync --all-groups
+      - run: uv lock --check
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run ty check
+
+  tests:
+    name: ${{ matrix.os }} / Python ${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13", "3.14"]
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+          python-version: ${{ matrix.python-version }}
+          version: "0.11.28"
+      - run: uv sync
+      - run: uv run pytest
+
+  dependency-bounds:
+    name: ${{ matrix.name }} Bleak
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Minimum
+            requirement: bleak==1.1.1
+            python: "3.11"
+          - name: Latest
+            requirement: bleak
+            python: "3.14"
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ matrix.python }}
+          version: "0.11.28"
+      - run: uv venv --python ${{ matrix.python }} .bounds
+      - run: >-
+          uv pip install --python .bounds/bin/python -e .
+          "${{ matrix.requirement }}" pytest pytest-asyncio pytest-cov hypothesis
+      - run: .bounds/bin/python -m pytest
+
+  distributions:
+    name: Documentation and distributions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+          python-version: "3.14"
+          version: "0.11.28"
+      - run: uv sync --all-groups
+      - run: uv run --group docs mkdocs build --strict
+      - run: uv build --no-sources
+      - run: uvx twine check dist/*
+      - run: uvx check-wheel-contents dist/*.whl
+      - name: Smoke-test wheel
+        run: >-
+          uv run --isolated --no-project --with dist/*.whl python -c
+          "import ondotori_ble; assert ondotori_ble.__version__"
+      - name: Smoke-test source distribution
+        run: >-
+          uv run --isolated --no-project --with dist/*.tar.gz python -c
+          "import ondotori_ble; assert ondotori_ble.__version__"

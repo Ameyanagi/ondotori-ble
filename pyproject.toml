@@ -1,0 +1,136 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "ondotori-ble"
+version = "0.1.0a1"
+description = "Unofficial typed Python APIs for selected T&D Ondotori BLE advertisements"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Ryuichi" }]
+keywords = ["bluetooth", "ble", "ondotori", "rtr500b", "sensor", "tandd", "temperature"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Framework :: AsyncIO",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: POSIX :: Linux",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Home Automation",
+  "Topic :: Scientific/Engineering :: Interface Engine/Protocol Translator",
+  "Typing :: Typed",
+]
+dependencies = [
+    "bleak>=1.1.1",
+]
+
+[project.urls]
+Documentation = "https://ameyanagi.github.io/ondotori-ble/"
+Changelog = "https://github.com/Ameyanagi/ondotori-ble/blob/main/CHANGELOG.md"
+Issues = "https://github.com/Ameyanagi/ondotori-ble/issues"
+Repository = "https://github.com/Ameyanagi/ondotori-ble"
+
+[dependency-groups]
+dev = [
+    "hypothesis>=6.0",
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.13",
+    "ty>=0.0.14",
+]
+docs = [
+    "mkdocs>=1.6.1",
+    "mkdocs-material>=9.7.1",
+    "mkdocstrings[python]>=1.0.3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/ondotori_ble"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+  "/CHANGELOG.md",
+  "/CONTRIBUTING.md",
+  "/LICENSE",
+  "/README.md",
+  "/SECURITY.md",
+  "/pyproject.toml",
+  "/src",
+  "/tests",
+]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+  "ASYNC",
+  "B",
+  "C4",
+  "D",
+  "DTZ",
+  "E4",
+  "E7",
+  "E9",
+  "F",
+  "I",
+  "LOG",
+  "PIE",
+  "PT",
+  "RUF",
+  "SIM",
+  "UP",
+]
+ignore = ["D105", "D107"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.pytest.ini_options]
+addopts = [
+  "--strict-config",
+  "--strict-markers",
+  "--cov=ondotori_ble",
+  "--cov-report=term-missing:skip-covered",
+  "--cov-fail-under=90",
+]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["ondotori_ble"]
+
+[tool.coverage.report]
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+]
+
+[tool.ty.environment]
+python-version = "3.11"
+python-platform = "all"
+root = ["./src"]
+
+[tool.ty.src]
+include = ["src", "tests"]

@@ -1,0 +1,44 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+env:
+  UV_LOCKED: "1"
+
+jobs:
+  publish:
+    environment:
+      name: pypi
+      url: https://pypi.org/project/ondotori-ble/
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.14"
+          version: "0.11.28"
+      - run: uv sync --all-groups
+      - run: test "v$(uv version --short)" = "$GITHUB_REF_NAME"
+      - run: uv run pytest
+      - run: uv run --group docs mkdocs build --strict
+      - run: uv build --no-sources
+      - run: uvx twine check dist/*
+      - run: uvx check-wheel-contents dist/*.whl
+      - name: Smoke-test wheel
+        run: >-
+          uv run --isolated --no-project --with dist/*.whl python -c
+          "import ondotori_ble; assert ondotori_ble.__version__ == '${{ github.ref_name }}'[1:]"
+      - name: Smoke-test source distribution
+        run: >-
+          uv run --isolated --no-project --with dist/*.tar.gz python -c
+          "import ondotori_ble; assert ondotori_ble.__version__ == '${{ github.ref_name }}'[1:]"
+      - run: uv publish --trusted-publishing always

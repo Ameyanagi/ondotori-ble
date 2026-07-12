@@ -1,0 +1,35 @@
+name: Publish to TestPyPI
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  UV_LOCKED: "1"
+
+jobs:
+  publish:
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/project/ondotori-ble/
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: "3.14"
+          version: "0.11.28"
+      - run: uv sync --all-groups
+      - run: uv run pytest
+      - run: uv build --no-sources
+      - run: uvx twine check dist/*
+      - run: uvx check-wheel-contents dist/*.whl
+      - run: >-
+          uv publish --publish-url https://test.pypi.org/legacy/
+          --trusted-publishing always

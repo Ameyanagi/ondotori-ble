@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.coverage
+.hypothesis/
+.pytest_cache/
+.ruff_cache/
+.venv/
+build/
+.bounds/
+dist/
+htmlcov/
+site/
+
+# Downloaded for local reference; T&D retains copyright.
+docs/manuals/*.pdf
+
+# Private hardware captures and identifiers used during local research.
+local/captures/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+
+# Local Lefthook overrides
+lefthook-local.yml

@@ -1,0 +1,26 @@
+{
+  "fixture_kind": "synthetic",
+  "description": "Synthetic C3-family packets derived from an independently observed byte pattern; no device identifier is retained.",
+  "observed_at": "2026-01-01T00:00:00+00:00",
+  "identifier": "synthetic-c3-device",
+  "name": "synthetic-c3",
+  "serial_number": "00C30001",
+  "family_code": "C3",
+  "company_id": "0392",
+  "manufacturer_data": "0100c30000003104ec040000000000000000",
+  "rssi": -60,
+  "samples": [
+    {
+      "manufacturer_data": "0100c30000003104ec040000000000000000",
+      "candidate_words": [1073, 1260]
+    },
+    {
+      "manufacturer_data": "0100c30000003104f6040000000000000000",
+      "candidate_words": [1073, 1270]
+    },
+    {
+      "manufacturer_data": "0100c30000003104f7040000000000000000",
+      "candidate_words": [1073, 1271]
+    }
+  ]
+}

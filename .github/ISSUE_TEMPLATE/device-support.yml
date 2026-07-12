@@ -1,0 +1,40 @@
+name: Device or mode support
+description: Propose a BLE advertisement layout using sanitized evidence.
+title: "support: "
+labels: [device-support]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not post serial numbers, BLE identifiers, registration codes, private
+        captures, or restricted T&D specifications. Replace them with synthetic
+        values and explain the transformation.
+  - type: input
+    id: model
+    attributes:
+      label: Exact model and input module
+      placeholder: RTR505B with RTR-505-V
+    validations:
+      required: true
+  - type: input
+    id: firmware
+    attributes:
+      label: Firmware and configured mode
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Public source or independently observed evidence
+      description: Include sanitized bytes, reference readings, and repeated changes.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Evidence safety
+      options:
+        - label: I removed private identifiers and registration information.
+          required: true
+        - label: I did not include a restricted specification.
+          required: true
