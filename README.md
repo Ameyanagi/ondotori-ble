@@ -11,7 +11,7 @@ provide a command-line interface.
 from ondotori_ble import read_all
 
 for reading in read_all(duration=75):
-    print(reading.serial_number, reading.model, reading.measurements)
+    print(reading.serial_number, reading.product_name, reading.measurements)
 ```
 
 ## Support boundary
@@ -22,7 +22,8 @@ when the layout and conversion have adequate evidence.
 | Device or family | Status | Evidence |
 | --- | --- | --- |
 | TR41, TR42, TR45 | Temperature decoded | T&D public example |
-| TR41A, TR42A | Temperature decoded | T&D public example |
+| TR41A | Temperature decoded | T&D public example |
+| TR42A | Temperature decoded; hardware verified | T&D public example and live scan |
 | TR43A, TR32B | Temperature and humidity decoded | T&D public example |
 | Family `C3` | Raw-only; product model unassigned | Independent observation |
 | RTR501B/502B/503B/505B/507B measurement modes | Not decoded | More evidence required |
@@ -118,6 +119,10 @@ assert reading.humidity_percent == 56.7
 Bleak separates T&D's company identifier (`0x0392`) from its payload. Set
 `company_id_included=True` only when input still begins with little-endian
 `92 03`.
+
+`reading.product_name` is the verified product name derived from the T&D
+manufacturer payload, such as `TR42A`. `reading.name` is the local or cached BLE
+name reported by the operating system and may be missing or less specific.
 
 ## Development
 

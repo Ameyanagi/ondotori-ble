@@ -39,6 +39,10 @@ value = (raw - 1000) / 10
 
 Values above `20000` are treated as sensor-error markers and produce `None`.
 
+TR42A family `42` was also verified against a live hardware advertisement. The
+public regression fixture preserves the observed packet structure with its
+device identifier and serial replaced.
+
 ## Independently observed family C3
 
 Family `C3` was independently observed in the room inventory, but the exact

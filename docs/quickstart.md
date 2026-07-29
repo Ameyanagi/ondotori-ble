@@ -15,7 +15,7 @@ uv add --prerelease allow ondotori-ble
 from ondotori_ble import read_all
 
 for reading in read_all(duration=75):
-    print(reading.serial_number, reading.model, reading.measurements)
+    print(reading.serial_number, reading.product_name, reading.measurements)
 ```
 
 No serial numbers are required. The result contains the newest packet from
@@ -37,7 +37,7 @@ readings = await read_all_async(duration=75)
 from ondotori_ble import read
 
 reading = read(timeout=75)
-print(reading.serial_number, reading.model)
+print(reading.serial_number, reading.product_name)
 
 if reading.is_decoded:
     for measurement in reading.measurements:
@@ -49,6 +49,8 @@ else:
 `read()` without a serial returns the first observed T&D packet. Use a known
 serial such as the synthetic `read("5F440123")` to wait for one logger. A
 deadline raises `ReadingTimeoutError` with the target and elapsed timeout.
+`reading.product_name` is derived from the T&D manufacturer payload; `name`
+remains the local or cached BLE name and may be missing or less specific.
 
 ## Filter a snapshot
 

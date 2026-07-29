@@ -6,6 +6,13 @@ this file.
 
 ## [Unreleased]
 
+## [0.1.0a2] - 2026-07-29
+
+### Added
+
+- `Reading.product_name` and `as_dict()["product_name"]` for the verified
+  product name, with explicit TR42A detection coverage.
+
 ## [0.1.0a1] - 2026-07-12
 
 ### Added
@@ -21,5 +28,6 @@ this file.
 - Real room identifiers and packets are excluded from tracked fixtures and
   distributions; the public C3 fixture is explicitly synthetic.
 
-[Unreleased]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a1...HEAD
+[Unreleased]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a2...HEAD
+[0.1.0a2]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a1...v0.1.0a2
 [0.1.0a1]: https://github.com/Ameyanagi/ondotori-ble/releases/tag/v0.1.0a1

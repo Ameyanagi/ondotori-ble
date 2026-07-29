@@ -173,6 +173,18 @@ async def test_context_manager_and_async_iterator() -> None:
 
 
 @pytest.mark.asyncio
+async def test_scanner_detects_tr42a_product_name() -> None:
+    scanner = OndotoriScanner(scanner_factory=factory())
+    async with scanner:
+        await FakeScanner.instances[-1].emit(advertisement(make_payload("5F420123")))
+        reading = await scanner.get(max_wait=0.1)
+
+    assert reading.model is DeviceModel.TR42A
+    assert reading.product_name == "TR42A"
+    assert reading.temperature_c == 20.0
+
+
+@pytest.mark.asyncio
 async def test_context_manager_does_not_mask_application_error() -> None:
     failing_factory = cast(ScannerFactory, StopFailingScanner)
     scanner = OndotoriScanner(scanner_factory=failing_factory)

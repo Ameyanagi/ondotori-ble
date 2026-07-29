@@ -1,0 +1,12 @@
+{
+  "fixture_kind": "synthetic",
+  "description": "Synthetic packet derived from an independently observed TR42A advertisement; the device identifier and serial were replaced.",
+  "observed_at": "2026-01-01T00:00:00+00:00",
+  "identifier": "synthetic-tr42a-device",
+  "name": "synthetic-tr42a",
+  "serial_number": "5F420123",
+  "family_code": "42",
+  "company_id": "0392",
+  "manufacturer_data": "2301425f00030102e40400000000000012c7",
+  "rssi": -50
+}

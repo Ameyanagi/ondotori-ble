@@ -184,6 +184,13 @@ class Reading:
         return bool(self.measurements)
 
     @property
+    def product_name(self) -> str | None:
+        """Return the verified T&D product name, when the model is identified."""
+        if self.model is DeviceModel.UNKNOWN:
+            return None
+        return self.model.value
+
+    @property
     def temperatures_c(self) -> tuple[float | None, ...]:
         """Return temperature channels in channel order."""
         return self.values(MeasurementKind.TEMPERATURE)
@@ -220,6 +227,7 @@ class Reading:
             "serial_number": self.serial_number,
             "family_code": self.family_code,
             "model": self.model.value,
+            "product_name": self.product_name,
             "measurements": [measurement.as_dict() for measurement in self.measurements],
             "rssi": self.rssi,
             "tx_power": self.tx_power,

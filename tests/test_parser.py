@@ -62,6 +62,30 @@ def test_decodes_published_temperature_models(
     assert reading.advertisement_format is expected_format
 
 
+def test_observed_tr42a_product_name_is_canonical_not_ble_name() -> None:
+    fixture_path = Path(__file__).parent / "fixtures" / "observed-tr42a-synthetic.json"
+    fixture = json.loads(fixture_path.read_text())
+    observed_at = datetime.fromisoformat(fixture["observed_at"])
+
+    reading = decode_advertisement(
+        bytes.fromhex(fixture["manufacturer_data"]),
+        identifier=fixture["identifier"],
+        rssi=fixture["rssi"],
+        name=fixture["name"],
+        observed_at=observed_at,
+    )
+
+    assert reading.serial_number == fixture["serial_number"]
+    assert reading.family_code == int(fixture["family_code"], 16)
+    assert reading.model is DeviceModel.TR42A
+    assert reading.product_name == "TR42A"
+    assert reading.name == "synthetic-tr42a"
+    assert reading.temperature_c == 25.2
+    assert reading.advertisement_format is AdvertisementFormat.TR4A
+    assert reading.evidence is EvidenceLevel.PUBLISHED
+    assert reading.as_dict()["product_name"] == "TR42A"
+
+
 @pytest.mark.parametrize(
     ("serial", "model"),
     [
@@ -101,6 +125,7 @@ def test_observed_c3_family_remains_unidentified() -> None:
     )
 
     assert reading.model is DeviceModel.UNKNOWN
+    assert reading.product_name is None
     assert reading.advertisement_format is AdvertisementFormat.UNKNOWN
     assert reading.serial_number == fixture["serial_number"]
     assert reading.family_code == 0xC3
@@ -181,6 +206,7 @@ def test_unknown_tandd_family_remains_observable() -> None:
     assert reading.measurements == ()
     assert reading.evidence is EvidenceLevel.UNKNOWN
     assert not reading.is_decoded
+    assert reading.product_name is None
     assert reading.temperature_c is None
 
 
@@ -227,4 +253,5 @@ def test_reading_as_dict_is_json_serializable() -> None:
     }
     assert result["raw_data"] == reading.raw_data.hex()
     assert result["family_code"] == 0x44
+    assert result["product_name"] == "TR43A"
     assert result["is_decoded"] is True
