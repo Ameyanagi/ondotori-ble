@@ -43,25 +43,44 @@ TR42A family `42` was also verified against a live hardware advertisement. The
 public regression fixture preserves the observed packet structure with its
 device identifier and serial replaced.
 
-## Independently observed family C3
+## Independently observed RTR505B layout
 
-Family `C3` was independently observed in the room inventory, but the exact
-printed device label and attached module were not recorded at capture time.
-Inventory context alone is not sufficient to make a permanent product mapping.
+Family `C3` was verified against the printed model and serial of an RTR505B.
+The connected input was also physically identified as a K thermocouple.
+Repeated advertisements matched the LCD temperature:
 
-The parser therefore returns:
+| Field | Interpretation |
+| --- | --- |
+| Family byte `C3` | RTR505B |
+| Byte 6 `31` | Observed temperature-mode marker |
+| Bytes 8-9 | One little-endian temperature value |
 
-- `family_code=0xC3`;
-- `model=DeviceModel.UNKNOWN`;
-- `advertisement_format=AdvertisementFormat.UNKNOWN`;
-- `evidence=EvidenceLevel.OBSERVED`;
-- no measurements; and
-- the complete Bleak payload in `raw_data`.
+The temperature uses the same offset-by-1000 tenths conversion as the published
+TR layouts. The parser reports `AdvertisementFormat.RTR500B` and
+`EvidenceLevel.OBSERVED` for this independently verified layout.
+A fresh hardware comparison produced raw value `1282`, decoded as `28.2 °C`,
+while the logger LCD simultaneously displayed `28.2 °C`.
 
-The public fixture is explicitly synthetic and contains no real device
-identifier. Its two changing candidate words remain uninterpreted. RTR505B, for
-example, can use TC, Pt, voltage, 4–20 mA, or pulse input modules with different
-physical conversions, so plausible numeric output is not adequate evidence.
+The observed `31` marker is shared by K-thermocouple and reported Pt
+temperature units; it does not distinguish their sensor technologies. Family
+`C3` identifies the RTR505B regardless of input mode, but a physical
+measurement is decoded only for this temperature marker. RTR505B can also use
+voltage, 4–20 mA, or pulse input modules with different physical conversions.
+Unverified markers therefore retain the RTR505B product name and complete
+`raw_data` while leaving `measurements` empty.
+
+The public regression fixture is synthetic: the device identifier, serial, and
+nonessential packet fields do not retain the hardware values.
+
+### Shared input modules
+
+T&D documents `TCM-3010`, `PTM-3010`, `AIM-3010`, `VIM-3010`, and `PIC-3150`
+as compatible with RTR505B, TR-55i, and legacy RTR-505 loggers. This supports
+using the same physical measurement units for labelled RTR505B captures.
+
+It does not establish a shared BLE packet layout. TR-55i communicates with a
+computer through a separate TR-50U2 communication port and is therefore not a
+BLE model supported by this library.
 
 ## Bluetooth capability is not advertisement evidence
 
@@ -92,6 +111,8 @@ redistributed.
 - [T&D public BLE/M5Stick example](https://www.tandd.co.jp/lab/microcontroller_browser/)
 - [RTR500B remote-unit models and channels](https://tandd.com/support/webhelp/rtr500b/eng/500b-dataloggers.html)
 - [RTR500B data-logger specifications](https://www.tandd.co.jp/product/spec/outline-spec-rtr500b-dataloggers-jpn.pdf)
+- [RTR505B/TR-55i input-module manual](https://tandd.com/manual/pdf/man-users-rtr505b-tr55i-inputmodule-eng.pdf)
+- [TR-55i product manual](https://tandd.com/manual/pdf/man-users-tr55i-eng.pdf)
 - [Bluetooth SIG company identifiers](https://www.bluetooth.com/specifications/assigned-numbers/company-identifiers/)
 - [T&D communication specification application](https://www.tandd.co.jp/techinfo/)
 

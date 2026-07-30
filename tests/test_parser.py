@@ -111,7 +111,7 @@ def test_decodes_published_temperature_humidity_models(
     ]
 
 
-def test_observed_c3_family_remains_unidentified() -> None:
+def test_observed_rtr505b_k_thermocouple_is_identified_and_decoded() -> None:
     fixture_path = Path(__file__).parent / "fixtures" / "observed-c3-synthetic.json"
     fixture = json.loads(fixture_path.read_text())
     observed_at = datetime.fromisoformat(fixture["observed_at"])
@@ -124,20 +124,21 @@ def test_observed_c3_family_remains_unidentified() -> None:
         observed_at=observed_at,
     )
 
-    assert reading.model is DeviceModel.UNKNOWN
-    assert reading.product_name is None
-    assert reading.advertisement_format is AdvertisementFormat.UNKNOWN
+    assert reading.model is DeviceModel.RTR505B
+    assert reading.product_name == "RTR505B"
+    assert reading.advertisement_format is AdvertisementFormat.RTR500B
     assert reading.serial_number == fixture["serial_number"]
     assert reading.family_code == 0xC3
-    assert reading.measurements == ()
-    assert not reading.is_decoded
+    assert reading.temperature_c == 26.0
+    assert reading.measurements[0].raw_value == 1_260
+    assert reading.is_decoded
     assert reading.evidence is EvidenceLevel.OBSERVED
     assert reading.observed_at is observed_at
     assert reading.identifier == fixture["identifier"]
     assert reading.name == "synthetic-c3"
 
 
-def test_synthetic_c3_samples_preserve_unassigned_candidate_words() -> None:
+def test_observed_rtr505b_temperature_samples_decode_repeated_values() -> None:
     fixture_path = Path(__file__).parent / "fixtures" / "observed-c3-synthetic.json"
     fixture = json.loads(fixture_path.read_text())
 
@@ -146,17 +147,36 @@ def test_synthetic_c3_samples_preserve_unassigned_candidate_words() -> None:
         for sample in fixture["samples"]
     ]
 
-    words = [
-        [
-            int.from_bytes(reading.raw_data[6:8], "little"),
-            int.from_bytes(reading.raw_data[8:10], "little"),
-        ]
-        for reading in readings
-    ]
-
-    assert words == [sample["candidate_words"] for sample in fixture["samples"]]
-    assert all(reading.measurements == () for reading in readings)
+    assert [reading.temperature_c for reading in readings] == [26.0, 27.0, 27.1]
+    assert [reading.measurements[0].raw_value for reading in readings] == [1_260, 1_270, 1_271]
+    assert all(reading.model is DeviceModel.RTR505B for reading in readings)
     assert all(reading.evidence is EvidenceLevel.OBSERVED for reading in readings)
+
+
+def test_rtr505b_unverified_input_module_is_identified_but_not_decoded() -> None:
+    payload = bytearray(make_payload("52C30783", 8, 1_260))
+    payload[6] = 0x32
+
+    reading = decode_advertisement(payload)
+
+    assert reading.model is DeviceModel.RTR505B
+    assert reading.product_name == "RTR505B"
+    assert reading.advertisement_format is AdvertisementFormat.RTR500B
+    assert reading.measurements == ()
+    assert not reading.is_decoded
+    assert reading.evidence is EvidenceLevel.OBSERVED
+
+
+def test_rtr505b_temperature_sensor_error_marker_is_preserved() -> None:
+    payload = bytearray(make_payload("52C30783", 8, 0xEFFE))
+    payload[6] = 0x31
+
+    reading = decode_advertisement(payload)
+
+    assert reading.temperature_c is None
+    assert reading.measurements[0].raw_value == 0xEFFE
+    assert not reading.measurements[0].is_valid
+    assert reading.is_decoded
 
 
 def test_adjacent_rtr500b_family_is_not_guessed() -> None:

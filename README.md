@@ -25,10 +25,11 @@ when the layout and conversion have adequate evidence.
 | TR41A | Temperature decoded | T&D public example |
 | TR42A | Temperature decoded; hardware verified | T&D public example and live scan |
 | TR43A, TR32B | Temperature and humidity decoded | T&D public example |
-| Family `C3` | Raw packet retained; not identified as RTR505B | Independent observation |
-| RTR505B measurement modes | Not decoded | Module-labelled captures required |
+| RTR505B temperature mode | Temperature decoded; K hardware verified | Labelled hardware and live scan |
+| Other RTR505B measurement modes | Product identified; raw packet retained | Module-labelled captures required |
 | RTR501B/502B/503B/507B measurement modes | Not decoded | More evidence required |
 | TR-7wb, TR7A, TR7A2 and related BLE layouts | Not decoded | More evidence required |
+| TR-55i | Shared input modules, but no BLE transport | T&D product manual |
 | Legacy RTR units without `B` | Out of scope | Not a BLE transport |
 
 This alpha does **not** claim support for every T&D Bluetooth model or mode.

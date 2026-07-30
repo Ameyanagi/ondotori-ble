@@ -61,10 +61,16 @@ def _spec(
 _T = MeasurementKind.TEMPERATURE
 _H = MeasurementKind.HUMIDITY
 
-# Packet families retained from independent observations without assigning a
-# product model or physical measurement. This records provenance without
-# turning room inventory into an unconditional protocol mapping.
-_OBSERVED_FAMILIES = frozenset({0xC3})
+_RTR505B_TEMPERATURE_MARKER = 0x31
+
+
+def _decode_rtr505b(payload: bytes) -> tuple[Measurement, ...]:
+    """Decode only the independently verified RTR505B temperature mode."""
+    if payload[6] != _RTR505B_TEMPERATURE_MARKER:
+        return ()
+    raw = int.from_bytes(payload[8:10], "little")
+    return (_decode_measurement(1, _T, raw),)
+
 
 # Serial-family mapping and offsets for TR4/TR4A are published by T&D in its
 # M5Stick BLE example. Offsets here exclude the two-byte company identifier,
@@ -84,6 +90,13 @@ _MODEL_SPECS: dict[int, _ModelSpec] = {
     0x45: _spec(DeviceModel.TR43A, AdvertisementFormat.TR4A, 8, _T, _H),
     0x46: _spec(DeviceModel.TR32B, AdvertisementFormat.TR4A, 8, _T, _H),
     0x47: _spec(DeviceModel.TR32B, AdvertisementFormat.TR4A, 8, _T, _H),
+    0xC3: _ModelSpec(
+        DeviceModel.RTR505B,
+        AdvertisementFormat.RTR500B,
+        10,
+        _decode_rtr505b,
+        EvidenceLevel.OBSERVED,
+    ),
 }
 
 
@@ -160,9 +173,7 @@ def decode_advertisement(
             name=name,
             raw_data=payload,
             advertisement_format=AdvertisementFormat.UNKNOWN,
-            evidence=(
-                EvidenceLevel.OBSERVED if family in _OBSERVED_FAMILIES else EvidenceLevel.UNKNOWN
-            ),
+            evidence=EvidenceLevel.UNKNOWN,
         )
 
     if len(payload) < spec.minimum_length:

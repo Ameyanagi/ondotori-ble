@@ -6,6 +6,13 @@ this file.
 
 ## [Unreleased]
 
+## [0.1.0a3] - 2026-07-30
+
+### Added
+
+- Identify family `C3` as RTR505B from label-verified hardware and decode the
+  observed temperature mode used by K-thermocouple and Pt inputs.
+
 ## [0.1.0a2] - 2026-07-30
 
 ### Added
@@ -33,6 +40,7 @@ this file.
 - Real room identifiers and packets are excluded from tracked fixtures and
   distributions; the public C3 fixture is explicitly synthetic.
 
-[Unreleased]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a2...HEAD
+[Unreleased]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a3...HEAD
+[0.1.0a3]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a2...v0.1.0a3
 [0.1.0a2]: https://github.com/Ameyanagi/ondotori-ble/compare/v0.1.0a1...v0.1.0a2
 [0.1.0a1]: https://github.com/Ameyanagi/ondotori-ble/releases/tag/v0.1.0a1
