@@ -26,9 +26,17 @@ that no logger is nearby. Use `decoded_only=True` to omit raw-only packets.
 Async code uses the matching API:
 
 ```python
+import asyncio
+
 from ondotori_ble import read_all_async
 
-readings = await read_all_async(duration=75)
+
+async def main() -> None:
+    for reading in await read_all_async(duration=75):
+        print(reading.serial_number, reading.product_name, reading.measurements)
+
+
+asyncio.run(main())
 ```
 
 ## Read one logger

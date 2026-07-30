@@ -29,7 +29,8 @@ sub-GHz radio, optical, USB, LAN, or a base-unit bridge. It contains no CLI.
 | TR41, TR42, TR45 | Published temperature decoder |
 | TR41A, TR42A | Published temperature decoder |
 | TR43A, TR32B | Published temperature/humidity decoder |
-| Observed family `C3` | Raw packet with model deliberately unassigned |
+| Observed family `C3` | Raw packet retained; not identified as RTR505B |
+| RTR505B measurement modes | Not decoded; exact input module evidence required |
 | Other RTR500B, TR-7wb, TR7A, and TR7A2 BLE layouts | Retained raw until verified |
 | RTR models without a trailing `B` | Outside the BLE boundary |
 

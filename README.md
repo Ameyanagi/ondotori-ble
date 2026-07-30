@@ -25,8 +25,9 @@ when the layout and conversion have adequate evidence.
 | TR41A | Temperature decoded | T&D public example |
 | TR42A | Temperature decoded; hardware verified | T&D public example and live scan |
 | TR43A, TR32B | Temperature and humidity decoded | T&D public example |
-| Family `C3` | Raw-only; product model unassigned | Independent observation |
-| RTR501B/502B/503B/505B/507B measurement modes | Not decoded | More evidence required |
+| Family `C3` | Raw packet retained; not identified as RTR505B | Independent observation |
+| RTR505B measurement modes | Not decoded | Module-labelled captures required |
+| RTR501B/502B/503B/507B measurement modes | Not decoded | More evidence required |
 | TR-7wb, TR7A, TR7A2 and related BLE layouts | Not decoded | More evidence required |
 | Legacy RTR units without `B` | Out of scope | Not a BLE transport |
 
@@ -76,7 +77,23 @@ device was received. Use `decoded_only=True` to exclude raw-only packets.
 ## Async and server use
 
 Async applications have matching `read_async()`, `read_all_async()`, and
-`scan_async()` functions. A long-running service can use the managed stream:
+`scan_async()` functions:
+
+```python
+import asyncio
+
+from ondotori_ble import read_all_async
+
+
+async def main() -> None:
+    for reading in await read_all_async(duration=75):
+        print(reading.serial_number, reading.product_name, reading.measurements)
+
+
+asyncio.run(main())
+```
+
+A long-running service can use the managed stream:
 
 ```python
 from ondotori_ble import stream_readings

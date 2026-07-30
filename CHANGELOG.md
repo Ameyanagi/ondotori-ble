@@ -6,12 +6,17 @@ this file.
 
 ## [Unreleased]
 
-## [0.1.0a2] - 2026-07-29
+## [0.1.0a2] - 2026-07-30
 
 ### Added
 
 - `Reading.product_name` and `as_dict()["product_name"]` for the verified
   product name, with explicit TR42A detection coverage.
+
+### Changed
+
+- Added a runnable async README example and clarified that raw family `C3`
+  retention does not constitute RTR505B model or measurement support.
 
 ## [0.1.0a1] - 2026-07-12
 
