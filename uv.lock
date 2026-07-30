@@ -606,7 +606,7 @@ wheels = [
 
 [[package]]
 name = "ondotori-ble"
-version = "0.1.0a3"
+version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "bleak" },

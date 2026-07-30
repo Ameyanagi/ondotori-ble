@@ -1,6 +1,6 @@
 # ondotori-ble
 
-> Unofficial alpha software. This project is independent of T&D Corporation.
+> Unofficial software. This project is independent of T&D Corporation.
 
 `ondotori-ble` is a typed Python library for receiving selected current-value
 advertisements from T&D Ondotori data loggers over Bluetooth Low Energy (BLE).
@@ -32,17 +32,16 @@ when the layout and conversion have adequate evidence.
 | TR-55i | Shared input modules, but no BLE transport | T&D product manual |
 | Legacy RTR units without `B` | Out of scope | Not a BLE transport |
 
-This alpha does **not** claim support for every T&D Bluetooth model or mode.
+This release does **not** claim support for every T&D Bluetooth model or mode.
 See the [protocol documentation](https://ameyanagi.github.io/ondotori-ble/protocol/)
 for the exact evidence boundary.
 
 ## Install
 
-Python 3.11 or newer is required. While the project is in alpha, allow
-pre-releases explicitly:
+Python 3.11 or newer is required:
 
 ```console
-uv add --prerelease allow ondotori-ble
+uv add ondotori-ble
 ```
 
 ## Read without knowing a serial number

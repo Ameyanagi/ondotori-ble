@@ -1,6 +1,6 @@
 # ondotori-ble
 
-!!! warning "Unofficial alpha"
+!!! warning "Unofficial software"
     This project is independent of T&D Corporation. It supports selected
     published advertisement layouts and does not yet cover every T&D BLE mode.
 
@@ -29,8 +29,8 @@ sub-GHz radio, optical, USB, LAN, or a base-unit bridge. It contains no CLI.
 | TR41, TR42, TR45 | Published temperature decoder |
 | TR41A, TR42A | Published temperature decoder |
 | TR43A, TR32B | Published temperature/humidity decoder |
-| Observed family `C3` | Raw packet retained; not identified as RTR505B |
-| RTR505B measurement modes | Not decoded; exact input module evidence required |
+| RTR505B temperature mode | Observed temperature decoder; hardware verified |
+| Other RTR505B measurement modes | Product identified; raw packet retained |
 | Other RTR500B, TR-7wb, TR7A, and TR7A2 BLE layouts | Retained raw until verified |
 | RTR models without a trailing `B` | Outside the BLE boundary |
 
@@ -41,7 +41,7 @@ Every `Reading` reports protocol provenance through `evidence`:
 | Value | Meaning |
 | --- | --- |
 | `published` | The mapping and conversion appear in a public T&D source. |
-| `observed` | A byte pattern was independently observed but is not fully identified. |
+| `observed` | The interpretation comes from independently verified hardware captures. |
 | `unknown` | No verified interpretation is assigned. |
 
 `reading.is_decoded` independently reports whether typed measurements were

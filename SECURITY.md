@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-During alpha development, only the newest published release receives fixes.
+During pre-1.0 development, only the newest published release receives fixes.
 The library must not be used as the sole component of a life-safety, alarm, or
 regulatory-compliance system.
 

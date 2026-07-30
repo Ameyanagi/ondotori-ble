@@ -3,10 +3,10 @@
 ## Installation
 
 Python 3.11 or newer, a supported Bluetooth adapter, and operating-system BLE
-permission are required. The current release is an alpha:
+permission are required:
 
 ```console
-uv add --prerelease allow ondotori-ble
+uv add ondotori-ble
 ```
 
 ## Read every observed logger

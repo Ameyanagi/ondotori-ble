@@ -10,7 +10,7 @@
 
 No long-lived package-index token is stored in the repository.
 
-## Alpha release checklist
+## Release checklist
 
 1. Confirm the support table matches the actual decoder registry.
 2. Confirm all public fixtures are synthetic or explicitly anonymized.
@@ -19,7 +19,7 @@ No long-lived package-index token is stored in the repository.
 4. Install both built artifacts into isolated environments.
 5. Update the version and changelog.
 6. Run the manual TestPyPI workflow and install that exact release.
-7. Create an annotated tag matching the version, such as `v0.1.0a1`.
+7. Create an annotated tag matching the version, such as `v0.1.0`.
 8. Push the tag; the PyPI workflow verifies that tag and package versions match.
 9. Verify the PyPI metadata, documentation links, provenance, and fresh install.
 
