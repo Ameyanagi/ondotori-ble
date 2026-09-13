@@ -126,9 +126,7 @@ The pure decoder does not require Bluetooth hardware:
 ```python
 from ondotori_ble import decode_advertisement
 
-reading = decode_advertisement(
-    bytes.fromhex("2301445f00000000d2041f06000000000000")
-)
+reading = decode_advertisement(bytes.fromhex("2301445f00000000d2041f06000000000000"))
 assert reading.temperature_c == 23.4
 assert reading.humidity_percent == 56.7
 ```
